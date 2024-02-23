@@ -1,7 +1,7 @@
-// def COLOR_MAP = [
-//     'FAILURE' : 'danger',
-//     'SUCCESS' : 'good'
-// ]
+def COLOR_MAP = [
+    'FAILURE' : 'danger',
+    'SUCCESS' : 'good'
+]
 pipeline{
     agent any
     tools{
@@ -42,12 +42,12 @@ pipeline{
                 sh "npm install"
             }
         }
-        // stage('OWASP FS SCAN') {
-        //     steps {
-        //         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-        //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-        //     }
-        // }
+        stage('OWASP FS SCAN') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
         stage('TRIVY FS SCAN') {
             steps {
                 sh "trivy fs . > trivyfs.txt"
@@ -84,16 +84,16 @@ pipeline{
         //     }
         // }
 
-    // }
-    // post {
-    // always {
-    //     echo 'Slack Notifications'
-    //     slackSend (
-    //         channel: '#jenkins', 
-    //         color: COLOR_MAP[currentBuild.currentResult],
-    //         message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} \n build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
-    //     )
-    // }
+    }
+    post {
+    always {
+        echo 'Slack Notifications'
+        slackSend (
+            channel: '#jenkins', 
+            color: COLOR_MAP[currentBuild.currentResult],
+            message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} \n build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
+        )
+    }
 }
 }
 
